@@ -64,12 +64,15 @@ start "proxy" /min cmd /c "node deploy\proxy.js > deploy\logs\proxy.log 2>&1"
 ping -n 2 127.0.0.1 >nul
 echo [OK] 代理就绪
 
-REM 6. 找 cloudflared
+REM 6. 找 cloudflared（按常见安装位置顺序探测，覆盖 winget / scoop / choco / 手动）
 set "CF="
-if exist "E:\claude\binaries\cloudflared.exe"        set "CF=E:\claude\binaries\cloudflared.exe"
+if exist "E:\claude\binaries\cloudflared.exe"                              set "CF=E:\claude\binaries\cloudflared.exe"
+if not defined CF if exist "%LOCALAPPDATA%\Programs\cloudflared\cloudflared.exe" set "CF=%LOCALAPPDATA%\Programs\cloudflared\cloudflared.exe"
 if not defined CF if exist "%LOCALAPPDATA%\Microsoft\WindowsApps\cloudflared.exe" set "CF=%LOCALAPPDATA%\Microsoft\WindowsApps\cloudflared.exe"
-if not defined CF if exist "%ProgramFiles%\cloudflared\cloudflared.exe"          set "CF=%ProgramFiles%\cloudflared\cloudflared.exe"
-if not defined CF for /f "delims=" %%I in ('where cloudflared 2^>nul') do set "CF=%%I"
+if not defined CF if exist "%ProgramFiles(x86)%\cloudflared\cloudflared.exe"      set "CF=%ProgramFiles(x86)%\cloudflared\cloudflared.exe"
+if not defined CF if exist "%ProgramFiles%\cloudflared\cloudflared.exe"           set "CF=%ProgramFiles%\cloudflared\cloudflared.exe"
+if not defined CF if exist "C:\ProgramData\chocolatey\bin\cloudflared.exe"        set "CF=C:\ProgramData\chocolatey\bin\cloudflared.exe"
+if not defined CF for /f "delims=" %%I in ('where cloudflared 2^>nul') do if not defined CF set "CF=%%I"
 
 echo.
 if defined CF (
