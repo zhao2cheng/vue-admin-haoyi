@@ -38,3 +38,6 @@ backend/data/
 # 本地助手配置
 .claude/
 .workbuddy/
+
+# server deploy package output
+deploy/out/
