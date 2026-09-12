@@ -28,8 +28,22 @@ cloudflared --version
 
 ### 启动
 
+任选一种：
+
 ```powershell
+# PowerShell（先 cd 到项目根目录）
+cd E:\claude\vue-admin
 .\deploy\start-tunnel.ps1
+```
+
+```batch
+# cmd / 双击（不受 PowerShell PATH 限制，最稳）
+.\deploy\start-tunnel.bat
+```
+
+```powershell
+# 或直接绝对路径
+& "E:\claude\vue-admin\deploy\start-tunnel.ps1"
 ```
 
 脚本会：
@@ -45,8 +59,11 @@ cloudflared --version
 
 ### 停止
 
+任选一种：
+
 ```powershell
-.\deploy\stop-tunnel.ps1
+.\deploy\stop-tunnel.ps1   # PowerShell
+.\deploy\stop-tunnel.bat   # cmd / 双击
 ```
 
 ---
@@ -63,6 +80,8 @@ node deploy/proxy.js                  # 终端 B
 # 终端 C：开隧道（首次会让你确认 host key + 选密码/免密）
 ssh -o StrictHostKeyChecking=accept-new -R 0:localhost:8080 serveo.net
 ```
+
+或者直接跑 `start-tunnel.bat` / `start-tunnel.ps1`，脚本会自动探测并切换。
 
 serveo 会输出 `https://xxxx.serveo.net`，发给同事即可。
 
