@@ -66,6 +66,52 @@ function fmtDateTime(d = new Date()) {
   return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(d.getHours())}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`
 }
 
+// ── 加权平均参考价：按产品聚合近 N 天回收明细成交价（数量加权 = Σqty×price ÷ Σqty）──
+// 无历史成交时回退商品档案 cost_price。created_at 为 localtime 文本，日期前缀可字典序比较。
+function computeRefPrice(productId, days = 90) {
+  const d = new Date(Date.now() - days * 864e5)
+  const pad = (n) => String(n).padStart(2, '0')
+  const since = `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`
+  const rows = db.prepare(
+    `SELECT qty, unit_price, created_at FROM recycle_order_items
+      WHERE product_id = ? AND created_at >= ? ORDER BY created_at DESC`
+  ).all(String(productId), since)
+  let qtySum = 0
+  let amtSum = 0
+  let lastPrice = 0
+  let lastTime = ''
+  let sampleCount = 0
+  for (const r of rows) {
+    const q = Number(r.qty) || 0
+    const p = parseMoney(r.unit_price)
+    if (q > 0 && p > 0) {
+      qtySum += q
+      amtSum += q * p
+      sampleCount++
+      if (!lastPrice) { lastPrice = p; lastTime = r.created_at || '' }
+    }
+  }
+  let refPrice = qtySum > 0 ? amtSum / qtySum : 0
+  let source = qtySum > 0 ? 'recycle' : ''
+  if (!refPrice) {
+    const prod = db.prepare('SELECT cost_price FROM products WHERE id = ?').get(String(productId))
+    const cp = parseMoney(prod?.cost_price)
+    if (cp > 0) { refPrice = cp; source = 'archive' }
+  }
+  return { refPrice, source, sampleCount, totalQty: qtySum, amtSum, lastPrice, lastTime }
+}
+
+// 电池类型 → 商品档案匹配关键词（小程序回收订单无 product_id，按类型模糊匹配 name/model/category）
+const BATTERY_TYPE_KEYWORDS = {
+  '三元锂': ['三元', 'ncm', 'nmc'],
+  '磷酸铁锂': ['磷酸铁锂', '铁锂', 'lfp'],
+  '锰酸锂电池': ['锰酸', 'lmo'],
+  '钴酸锂电池': ['钴酸', 'lco'],
+  '动力电池组': ['动力'],
+  '混合动力电池': ['混动', '动力'],
+  '电池模组': ['模组'],
+}
+
 const PORT = process.env.PORT || 4000
 
 const server = createServer(async (req, res) => {
@@ -308,6 +354,77 @@ const server = createServer(async (req, res) => {
   if (path === '/api/open/recycle-list' && req.method === 'GET') {
     const rows = db.prepare('SELECT * FROM recycle_orders ORDER BY id DESC').all()
     return send(200, { code: 0, message: 'ok', data: { list: rows } })
+  }
+
+  // ── 小程序开放接口（共享密钥）：按电池类型取加权平均参考价（管理员小程序报价参考）──
+  // GET /api/open/price-reference?type=磷酸铁锂&days=90
+  // 小程序订单无 product_id，按 BATTERY_TYPE_KEYWORDS 模糊匹配商品档案后聚合
+  if (path === '/api/open/price-reference' && req.method === 'GET') {
+    const type = url.searchParams.get('type') || ''
+    const days = Math.min(365, Math.max(7, parseInt(url.searchParams.get('days') || '90', 10) || 90))
+    const kws = BATTERY_TYPE_KEYWORDS[type]
+    if (!kws) {
+      return send(200, { code: 0, message: 'ok', data: { matched: false, windowDays: days, products: [] } })
+    }
+    try {
+      const prods = db.prepare('SELECT id, name, model, category, cost_price FROM products').all()
+      const matched = prods.filter((p) => {
+        const hay = `${p.name || ''} ${p.model || ''} ${p.category || ''}`.toLowerCase()
+        return kws.some((k) => hay.includes(k))
+      })
+      // 逐产品算参考价，再按数量加权合成整体参考价
+      let qtySum = 0
+      let amtSum = 0
+      let sampleCount = 0
+      let lastPrice = 0
+      let lastTime = ''
+      let archivePrices = []
+      const products = matched.map((p) => {
+        const r = computeRefPrice(p.id, days)
+        if (r.source === 'recycle') {
+          qtySum += r.totalQty
+          amtSum += r.amtSum
+          sampleCount += r.sampleCount
+          if (r.lastTime >= lastTime) { lastTime = r.lastTime; lastPrice = r.lastPrice }
+        } else if (r.source === 'archive') {
+          archivePrices.push(r.refPrice)
+        }
+        return {
+          id: p.id,
+          name: p.name || '',
+          spec: p.model || '',
+          refPrice: fmtMoney(r.refPrice),
+          source: r.source,
+          sampleCount: r.sampleCount,
+          totalQty: r.totalQty,
+        }
+      })
+      let refPrice = 0
+      let source = ''
+      if (qtySum > 0) {
+        refPrice = amtSum / qtySum
+        source = 'recycle'
+      } else if (archivePrices.length) {
+        refPrice = archivePrices.reduce((a, b) => a + b, 0) / archivePrices.length
+        source = 'archive'
+      }
+      return send(200, {
+        code: 0, message: 'ok',
+        data: {
+          matched: matched.length > 0,
+          windowDays: days,
+          refPrice: refPrice > 0 ? fmtMoney(refPrice) : '',
+          source,
+          sampleCount,
+          totalQty: qtySum,
+          lastPrice: lastPrice ? fmtMoney(lastPrice) : '',
+          lastTime,
+          products,
+        },
+      })
+    } catch (err) {
+      return send(500, { code: 500, message: err.message })
+    }
   }
 
   // ── 小程序开放接口（共享密钥）：管理员在小程序报价 → 同步后台 ──
@@ -651,45 +768,18 @@ const server = createServer(async (req, res) => {
     const days = Math.min(365, Math.max(7, parseInt(sp.get('days') || '90', 10) || 90))
     if (!productId) return send(400, { code: 400, message: '缺少 product_id' })
     try {
-      // created_at 为 localtime 文本（YYYY-MM-DD HH:MM:SS），日期前缀可直接字典序比较
-      const d = new Date(Date.now() - days * 864e5)
-      const since = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
-      const rows = db.prepare(
-        `SELECT qty, unit_price, created_at FROM recycle_order_items
-          WHERE product_id = ? AND created_at >= ? ORDER BY created_at DESC`
-      ).all(String(productId), since)
-      let qtySum = 0
-      let amtSum = 0
-      let lastPrice = 0
-      let sampleCount = 0
-      for (const r of rows) {
-        const q = Number(r.qty) || 0
-        const p = parseMoney(r.unit_price)
-        if (q > 0 && p > 0) {
-          qtySum += q
-          amtSum += q * p
-          sampleCount++
-          if (!lastPrice) lastPrice = p
-        }
-      }
-      let refPrice = qtySum > 0 ? amtSum / qtySum : 0
-      let source = qtySum > 0 ? 'recycle' : ''
-      // 无历史成交 → 回退商品档案 cost_price
-      if (!refPrice) {
-        const prod = db.prepare('SELECT cost_price FROM products WHERE id = ?').get(String(productId))
-        const cp = parseMoney(prod?.cost_price)
-        if (cp > 0) { refPrice = cp; source = 'archive' }
-      }
+      const r = computeRefPrice(productId, days)
       return send(200, {
         code: 0, message: 'ok',
         data: {
           productId: String(productId),
           windowDays: days,
-          refPrice: fmtMoney(refPrice),
-          source,               // recycle=历史成交加权 / archive=档案价 / ''=无参考
-          sampleCount,
-          totalQty: qtySum,
-          lastPrice: fmtMoney(lastPrice),
+          refPrice: fmtMoney(r.refPrice),
+          source: r.source,          // recycle=历史成交加权 / archive=档案价 / ''=无参考
+          sampleCount: r.sampleCount,
+          totalQty: r.totalQty,
+          lastPrice: fmtMoney(r.lastPrice),
+          lastTime: r.lastTime,
         },
       })
     } catch (err) {
