@@ -12,7 +12,7 @@ import { fileURLToPath } from 'node:url'
 
 const PORT = Number(process.env.PROXY_PORT || 8080)
 const BACKEND = process.env.BACKEND_URL || 'http://127.0.0.1:4000'
-const DIST_DIR = resolve(fileURLToPath(new URL('../../dist/', import.meta.url)))
+const DIST_DIR = resolve(fileURLToPath(new URL('../dist/', import.meta.url)))
 const MIME = {
   '.html': 'text/html; charset=utf-8',
   '.js':   'application/javascript; charset=utf-8',
