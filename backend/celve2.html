@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<link type="text/css" rel="stylesheet" href="css/css.css" />
+<script type="text/javascript" src="js/jquery-1.7.2.min.js"></script>
+<script type="text/javascript" src="js/jquery.carouFredSel.js"></script>
+<script type="text/javascript" src="js/base.js"></script>
+<!--以下是页面独有JS,请不要放在公用php文件中-->
+<script type="text/javascript" src="js/echarts.js"></script>
+<script type="text/javascript" src="js/index.js"></script>
+<!--以上是页面独有JS,请不要放在公用php文件中-->
+<title>报废机动车回收拆解与再利用信息网</title>
+<meta name="description" content="中国再生资源回收利用协会2016年12月17日与近百家发起单位共同成立“中国再生协会报废车回收拆解与再利用分会”（简称报废车分会），充分务实发挥好报废车行业组织的优势和作用。报废车分会的成立，旨在汇聚相关部委、行业协会、研究机构和企业，集专业研究、创新模式、市场优势共同协同构建汽车循环再利用的生态圈。" />
+<meta name="keywords" content="报废车分会,报废车行业协会,报废车协会,报废汽车协会,CELVE,中再生报废车分会,报废车回收,报废车回收拆解,再生资源,资源回收,报废车专业委员会,中国再生报废车,汽车拆解,新能源电池回收,新能源汽车拆解,报废车信息网,报废汽车信息网,回收拆解联盟,物资协会报废车,报废车拆解管理系统,报废机动车拆解培训,新能源汽车拆解培训,报废车企业管理培训,汽车拆解培训,报废车行业会议,老旧汽车以旧换新." />
+<link rel="shortcut icon" href="/favicon.ico" />
+</head>
+
+<body onLoad="setup()" onContextMenu="return false" onSelectStart="return false">	
+		<div class="header_t">
+		<div class="wrapin">
+			
+			<div class="ht_left">
+				欢迎来到CELVE，报废机动车回收拆解与再利用信息网
+			</div>
+
+			<div class="ht_right">
+			<a href="memberJoin.php" class="lga">我要入会</a>
+				<!--<a href="#">设为首页</a><em>|</em>
+				<a href="#">加入收藏</a><em>|</em>-->
+				<a href="login.php">登录</a><em>|</em>
+				<a href="reg.php">注册</a>			</div>
+
+		</div>
+	</div>	
+	<div class="clear"></div>
+	<div class="header">
+		<div class="wrapin">
+			
+			<a href="/" class="logo">
+				<img src="images/logo.png" alt="">
+			</a>
+
+			<div class="nav">
+				<a href="/" >网站首页</a>
+				<a href="policyCenter.php"  class="hover">政策汇总</a>
+				<a href="hangyeCenter.php" >行业信息</a>
+				<a href="dataCount.php" >统计数据</a>
+				<a href="newsCenter.php" >CELVE动态</a>
+				<a href="memberService.php" >会员服务</a>
+				<a href="meetShow.php" >会议会展</a>
+				<a href="peixunCenter.php" >行业培训</a>
+				<a href="biaozhunCenter.php" >规范标准</a>
+				<a href="baikeCenter.php" >拆解百科</a>
+				<a href="job.php" >业内招聘</a>
+				<a href="compare.php" >供求/合作</a>
+				<a href="scrap.php" >有车报废</a>
+				<a href="about.php" >联系我们</a>
+			</div>
+
+			<div class="clear"></div>
+		</div>
+	</div>
+<div class="line50"></div>
+	<div class="wrapin">
+		
+		<div class="po_aside">
+			
+			<div class="po_nav">
+				<div class="wp">
+					<div class="title">政策汇总</div>
+					<ul>
+						<li><a href="policy-1.html" >国家政策</a></li>
+						<li><a href="policy-2.html" >地方政策</a></li>
+						<li><a href="policy-3.html" >补贴补助</a></li>
+						<li><a href="policy-4.html" >政策解读</a></li>		
+						<li><a href="policy-5.html" >重要发言</a></li>		
+						<li><a href="policy-6.html" class="hover">资质企业</a></li>		
+					</ul>
+				</div>
+			</div>
+
+			<div class="po_rec">
+				
+				<div class="wp">
+					<div class="title">相关文章推荐</div>
+					<ul>
+											<li><a href="policy_x-12585-6.html">河南省安阳市报废机动车回收拆解企业（截至2026年9月4日）...</a></li>						<li><a href="policy_x-12573-6.html">内蒙古包头市报废机动车回收拆解企业名单（截止2026年8月31日）...</a></li>						<li><a href="policy_x-12566-6.html">陕西省安康市报废汽车回收拆解企业名单（截至2026年08月13日）...</a></li>						<li><a href="policy_x-12358-6.html">广东省韶关市：关于公布韶关市具有报废机动车回收拆解资质的企...</a></li>						<li><a href="policy_x-12356-6.html">山东省德州市：关于公布报废机动车非法拆解举报方式及资质企业...</a></li>						<li><a href="policy_x-12343-6.html">广东省：惠州市报废机动车回收拆解企业名单（截至2026年3月）...</a></li>						<li><a href="policy_x-12068-6.html">江苏省如皋市：报废机动车非法回收安全风险提示</a></li>						<li><a href="policy_x-11903-6.html">福建省：2025年三明市农机报废回收企业名录</a></li>					</ul>
+				</div>
+			</div>
+
+		</div>
+
+		<div class="po_section">
+			
+			<div class="po_list">
+				
+				<div class="title">
+					<span class="tit">资质企业</span>
+				</div>
+								<div class="po_title">
+					<h2>​湖南省报废机动车回收拆解资质企业公告（截至2024年1月15日）</h2>
+					<p>发布时间：2024-03-05&nbsp;&nbsp;&nbsp;来源：湖南省商务厅&nbsp;&nbsp;&nbsp;点击数：87198次</p>
+				</div>
+
+				<div class="po_cnt">
+					
+					
+					
+					<p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：常德市鼎城区玉霞街道孔家融社区</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">39、汉寿县明信报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：汉寿县高新技术产业园区天星社区金牛大道6号</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">40、桃源县飞翔报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：桃源县漳江镇白佛阁社区六组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">41、安乡安诚报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：安乡县深柳镇长岭洲社区工业园</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">42、石门顺华报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：石门易家渡镇军垱桥村8组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">43、临澧县欣发源报废汽车拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：临澧县经济开发区安福工业园欣发源公司院内</span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;"><br/></span></strong></span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;">张家界（5家）</span></strong></span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">44、张家界市报废汽车回收有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：张家界市崇文街道经济开发区C区义乌鸿图产业园</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">45、张家界荣昌报废汽车回收有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：张家界市永定区崇文街道阳湖坪镇经开区C区湘国物流园</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">46、桑植县二保机动车拆解报废有限责任公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：桑植县澧源镇何家坪社区</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">47、慈利县华英再生资源有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：慈利县通津铺镇通津铺居委会七组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">48、慈利县永新报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：慈利县零阳街道仁和村（慈利产业开发区）</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">49、湖南卓越再生资源有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：益阳市赫山区龙光桥街道进港村</span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;"><br/></span></strong></span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;">益阳（10家）</span></strong></span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">50、湖南利然报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：益阳市赫山区龙光桥镇全丰村</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">51、益阳五鑫报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：益阳市赫山区龙光桥街道龙光桥镇宁家铺粮食储备库内</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">52、益阳嘉锐再生资源有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：益阳市赫山区龙光桥街道南阳社区G536路南侧</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">53、湖南兰湘再生资源回收有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：南县浪拔湖镇山桥村</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">54、南县物通报废汽车回收有限责任公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：南县浪拔湖镇红星村十组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">55、安化县泰鑫再生资源有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：安化县柘溪镇柘溪杨沙社区第十三村民组第84号</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">56、安化县利达报废汽车回收有限责任公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：安化县长塘镇林山社区林山托组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">57、沅江市诚信报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：沅江市青年坝社区高新技术产业园</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">58、桃江县锦鑫报废汽车回收有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：桃江县灰山港金沙路518号</span></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;"><br/></span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;">郴州（8家）</span></strong></span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">59、郴州市隆程报废汽车回收有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：郴州市苏仙区白露塘镇上湾路</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">60、郴州市五岭报废汽车回收拆解有限责任公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：郴州市北湖区石盖塘镇郴州万容金属加工有限公司</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">61、郴州申湘再生资源利用有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：郴州市高新区青年大道870号1栋</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">62、湖南鑫韵报废汽车回收拆解有限责任公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：郴州市北湖区骆仙街道杉山岭村10组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">63、桂阳县鸿兴报废车辆有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：桂阳县方元镇方元村东江组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">64、嘉禾县盛邦报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：嘉禾县珠泉镇坦塘工业园禾仓北路</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">65、嘉禾县爱建报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：嘉禾县坦坪镇坦坪村101房</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">66、宜章兴泰报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：宜章县白石渡镇建新路10号</span></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;"><br/></span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;">永州（10家）</span></strong></span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">67、永州市报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：永州市冷水滩区岚角山街道官禄塘村上石村民小组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">68、永州市三利报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：永州市零陵区湖南零陵工业园河西工业区内</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">69、湖南闽湘再生资源有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：双牌县五里牌镇全家洲村永州富宁有色金属公司内</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">70、祁阳巨鑫报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：祁阳县茅竹镇大岭村一组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">71、永州市江永县文兴报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：江永县潇铺镇工业集中区大漠头路</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">72、新田星盛报废机动车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：新田县新圩镇远程驾校内</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">73、宁远县宏达报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：宁远县东溪街道逍遥岩社区宁新路</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">74、宁远县宁太报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：宁远县东溪街道东山村</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">75、永州市凯越报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：永州市零陵区富家桥镇何家坪村9组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">76、永州市蓝方报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：永州市零陵区七里店街道南津北路119号</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">77、娄底市报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：娄底市经济开发区南北二路以西东西街以南1栋101</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">78、新化县益兴报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：新化高新技术产业开发区向红工业园</span></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;"><br/></span></p><p style="text-indent: 2em; text-align: center;"><span style="color: rgb(0, 112, 192);"><strong><span style="font-size: 16px;">娄底(8家)</span></strong></span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">79、新化和源报废机动车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：新化高新技术开发区游家工业园</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">80、新化县飞跃报废机动车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：新化县炉观镇跳石村</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">81、冷水江市安鑫报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：冷水江市沙塘湾街道办事处柳溪村9组</span></p><p style="text-indent: 2em; text-align: left;"><strong><span style="font-size: 16px;">82、双峰五丰报废汽车回收拆解有限公司</span></strong></p><p style="text-indent: 2em; text-align: left;"><span style="font-size: 16px;">地址：双峰县科技工业园湖南五丰机械有限公司内</span></p>					
+				</div>
+
+				<div class="page"><a href='http://www.crracelve.com/policy_x.php?id=10679&pid=6&ipage=1'>1</a> <span class="now">2</span> <a href='http://www.crracelve.com/policy_x.php?id=10679&pid=6&ipage=3'>3</a> 				</div>
+				<div class="clear"></div>
+
+				<div class="po_share rt">
+					<div class="ti lt">分享到：</div>
+					<div class="bdsharebuttonbox lt"><a href="#" class="bds_more" data-cmd="more"></a><a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a><a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a><a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a><a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a><a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a></div>
+<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdPic":"","bdStyle":"0","bdSize":"16"},"share":{},"image":{"viewList":["qzone","tsina","tqq","renren","weixin"],"viewText":"分享到：","viewSize":"16"}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+				</div>
+				<div class="clear"></div>
+
+				<div class="po_ot">
+					<div class="lt">
+						<span>上一篇：</span>
+						<a href="policy_x-10676-6.html">江苏省报废机动车回收企业名单（截至2024年3月1日...</a>
+					</div>					<div class="rt">
+						<span>下一篇：</span>
+						<a href="policy_x-10707-6.html">吉林省取得报废机动车回收拆解企业资质认定的企业...</a>
+					</div>					<div class="line10"></div>
+				</div>
+
+				<div class="po_bq">
+					<div class="t1">版权声明</div>
+					<p>　　凡本网注明“来源:CELVE，报废汽车产链专业服务平台"的所有作品,均为报废机动车回收拆解与再利用信息网合法拥有版权或有权使用的作品，任何媒体、网站或个人未经本网协议授权不得转载、链接、转贴或以其他方式复制发布。</p>
+					<p>　　已经本网授权使用作品的媒体、网站和个人,应在授权范围内使用,并注明“来源:CELVE，报废汽车产链专业服务平台”。违反上述声明者,本网将追究其相关法律责任。</p>
+					<p>　　凡本网注明“来源: XxXx (CELVE，报废汽车产链专业服务平台)”的文字、图片,均转载自其它媒体,转载目的在于传递更多信息,并不代表本网赞同其观点和对其真实性负责。</p>
+				</div>
+
+				<div class="po_news">
+					<div class="t1">相关新闻</div>
+					
+					<ul>
+											<li><a href="policy_x-12585-6.html">河南省安阳市报废机动车回收拆解企业（截至...</a></li>						<li><a href="policy_x-12573-6.html">内蒙古包头市报废机动车回收拆解企业名单（...</a></li>						<li><a href="policy_x-12566-6.html">陕西省安康市报废汽车回收拆解企业名单（截...</a></li>						<li><a href="policy_x-12358-6.html">广东省韶关市：关于公布韶关市具有报废机动...</a></li>						<li><a href="policy_x-12356-6.html">山东省德州市：关于公布报废机动车非法拆解...</a></li>						<li><a href="policy_x-12343-6.html">广东省：惠州市报废机动车回收拆解企业名单...</a></li>						<li><a href="policy_x-12068-6.html">江苏省如皋市：报废机动车非法回收安全风险...</a></li>						<li><a href="policy_x-11903-6.html">福建省：2025年三明市农机报废回收企业名录...</a></li>						<li><a href="policy_x-11840-6.html">四川省已取得资质认定的报废机动车回收拆解...</a></li>						<li><a href="policy_x-11634-6.html">云南省普洱市报废机动车回收拆解企业及回收...</a></li>						<li><a href="policy_x-11614-6.html">陕西省2025年延安市报废机动车回收拆解企业...</a></li>						<li><a href="policy_x-11585-6.html"> 山东省东营市报废机动车回收拆解资质企业名...</a></li>						<li><a href="policy_x-11583-6.html">广东省云浮市报废机动车回收拆解企业及分支...</a></li>						<li><a href="policy_x-11578-6.html">四川省已取得资质认定的报废机动车回收拆解...</a></li>						<li><a href="policy_x-11566-6.html">广东省江门市报废机动车回收拆解企业及分支...</a></li>						<li><a href="policy_x-11550-6.html">安徽省宿州市已取得报废机动车回收拆解资质...</a></li>					</ul>
+					
+					<div class="clear"></div>
+				</div>
+				
+			</div>
+
+		</div>
+
+		<div class="clear"></div>
+	</div>
+
+	<div class="line50"></div>
+	<!--公用底部--></div>
+	<div class="clear"></div>
+	<div class="footer">
+		<div class="wrapin">
+			
+			<div class="ft_nav">
+				<div class="s_list">
+				<a href="policyCenter.php">政策汇总</a>
+				<a href="hangyeCenter.php">行业信息</a>
+				<a href="dataCount.php">统计数据</a>
+				<a href="newsCenter.php">CELVE动态</a>
+				<a href="memberService.php">会员服务</a>
+				<a href="meetShow.php">会议会展</a>
+				<a href="peixunCenter.php">行业培训</a>
+				<a href="biaozhunCenter.php">规范标准</a>
+				<a href="baikeCenter.php">拆解百科</a>
+				<a href="tech.php">技术/设备</a>
+				<a href="job.php">业内招聘</a>
+				<a href="compare.php">供求/合作</a>
+				<a href="scrap.php">有车报废</a>
+				<a href="about.php">联系我们</a>
+				
+					
+					<div class="clear"></div>
+				</div>
+			</div>
+
+			<div class="ft_links">
+				<div class="title">友情链接</div>
+				<a href="http://www.zhb.gov.cn/" target="_blank">环保部</a><em>|</em><a href="http://www.mofcom.gov.cn/" target="_blank">商务部</a><em>|</em><a href="http://www.miit.gov.cn/" target="_blank">工信部</a><em>|</em><a href="http://www.crra.org.cn/" target="_blank">中国再生资源回收利用协会</a><em>|</em><a href="http://www.chinacace.org/" target="_blank">中国循环经济协会</a><em>|</em><a href="http://www.camu.org.cn/" target="_blank">中国废钢铁应用协会</a><em>|</em><a href="http://www.ctra.org.cn/" target="_blank">中国轮胎循环利用协会</a><em>|</em><a href="http://www.cnsa.com.cn/" target="_blank">中国拆船协会</a><em>|</em><a href="http://www.chinacmra.org/" target="_blank">中国有色金属工业协会再生金属分会</a><em>|</em><a href="https://www.mysteel.com/" target="_blank">我的钢铁</a><em>|</em><a href="https://www.daxiangshouche.com/" target="_blank">大象收车</a><em>|</em><a href="https://emanage.mofcom.gov.cn/loginGov.html" target="_blank">商务部汽车流通管理系统</a><em>|</em><a href="https://ltbzh.mofcom.gov.cn/ltbzh_index" target="_blank">商务部流通标准修订管理系统</a><em>|</em><a href="http://steel.sci99.com/channel/feigang/" target="_blank">卓创资讯</a><em>|</em>				<div class="clear"></div>
+			</div>
+
+			<ul class="ft_copy">
+				<li>主办：报废机动车回收拆解与再利用信息网&nbsp;&nbsp;&nbsp;<a href="http://beian.miit.gov.cn/" target="_blank">京ICP备17010101号-1</a>&nbsp;&nbsp;&nbsp;京公安网备1111000000号</li>
+				<li>版权所有：报废机动车回收拆解与再利用信息网</li>
+				<li>技术支持：报废机动车回收拆解与再利用信息网&nbsp;&nbsp;&nbsp;邮箱：407136030@qq.com&nbsp;&nbsp;&nbsp;&nbsp;<a href="glogin.php" target="_blank">客户管理</a></li>
+			</ul>
+			
+			
+			<dl class="ft_tel">
+				<dt><img src="images/ft_tel.png" alt=""></dt>
+				<dd>159 1090 8056</dd>
+			</dl>
+
+			<div class="clear"></div>
+		</div>
+	</div>
+
+	<div class="fr_ctrl">
+		<div class="fr_wp">
+			<a href="javascript:;" class="btn"><img src="images/ft_wx.png" alt=""></a>
+			<img src="images/zx_code.jpg" alt="" class="code">
+		</div>	
+		<div class="fr_wp">
+			<a href="javascript:;" class="btn"><img src="images/ft_qq.png" alt=""></a>
+		</div>
+		<div class="fr_wp">
+			<a href="javascript:;" class="btn go_top"><img src="images/ft_top.png" alt=""></a>
+		</div>
+	</div>
+	<!--公用底部-->
+	<div class="zx_win">
+
+		<div class="close" title="点击关闭"></div>
+
+		<div class="wrapin">
+			
+			<img src="images/zx_left.png" alt="" class="s1">
+
+			<img src="images/zx_ct.png" alt="" class="s2">
+
+			<dl class="zx_code">
+				<dt>扫一扫，加关注</dt>
+				<dd>
+					<img src="images/zx_code.jpg" alt="">
+				</dd>
+			</dl>
+
+			<div class="zx_fm">
+				<form name="g" id="g" method="post" action="?">
+<input type="hidden" name="act" value="addd" />	
+					<div class="t1">我要报废汽车，已有 <span>2139</span> 人填写了报废需求</div>
+					<input type="text" name="subject" class="text lt" placeholder="姓名">
+					<input type="text" name="jia4" class="text rt" placeholder="输入手机号码">
+					<div class="line10"></div>
+					<input type="submit" name="submit" value="立即报废" class="sub">
+				</form>
+			</div>
+
+		</div>
+	</div>
+	<div class="zx_zw"></div>
+	
+</body>
+</html>

@@ -1,0 +1,198 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>功能对账报告 · 当前项目 vs 原型</title>
+<style>
+  :root{
+    --bg:#f6f8fa; --card:#fff; --line:#e6eaf0; --ink:#1f2937; --sub:#6b7280;
+    --ok:#10b981; --warn:#f59e0b; --bad:#ef4444; --blue:#2563eb; --emerald:#059669;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,"Segoe UI",Roboto,"PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.6;padding:32px 16px}
+  .wrap{max-width:1080px;margin:0 auto}
+  h1{font-size:26px;margin:0 0 4px}
+  .meta{color:var(--sub);font-size:13px;margin-bottom:24px}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:22px 24px;margin-bottom:20px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04)}
+  h2{font-size:18px;margin:0 0 14px;display:flex;align-items:center;gap:8px}
+  h2 .tag{font-size:11px;font-weight:700;color:#fff;background:var(--blue);border-radius:6px;padding:2px 8px}
+  table{width:100%;border-collapse:collapse;font-size:13.5px}
+  th,td{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line);vertical-align:top}
+  th{background:#fafbfc;font-weight:700;color:var(--sub);font-size:12px;text-transform:uppercase;letter-spacing:.04em}
+  tr:last-child td{border-bottom:none}
+  .ok{color:var(--ok);font-weight:700}
+  .warn{color:var(--warn);font-weight:700}
+  .bad{color:var(--bad);font-weight:700}
+  .pill{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700}
+  .p-ok{background:#ecfdf5;color:#059669}
+  .p-warn{background:#fffbeb;color:#b45309}
+  .p-bad{background:#fef2f2;color:#dc2626}
+  .p-info{background:#eff6ff;color:#1d4ed8}
+  code{background:#f3f4f6;padding:1px 6px;border-radius:5px;font-size:12.5px;font-family:ui-monospace,Menlo,monospace}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+  @media(max-width:860px){.grid2{grid-template-columns:1fr}}
+  .grp{font-size:13px;margin-bottom:10px}
+  .grp b{display:inline-block;min-width:96px;color:var(--ink)}
+  .grp .items{color:var(--sub)}
+  .note{background:#fffbeb;border-left:4px solid var(--warn);padding:10px 14px;border-radius:8px;font-size:13px;margin:10px 0}
+  .spot{background:#fef2f2;border-left:4px solid var(--bad);padding:12px 16px;border-radius:8px;margin:10px 0}
+  .todo{background:#eff6ff;border-left:4px solid var(--blue);padding:12px 16px;border-radius:8px;margin:10px 0;font-size:13.5px}
+  ul{margin:8px 0;padding-left:20px}
+  li{margin:4px 0}
+  .k{font-weight:700}
+  .em{color:var(--emerald)}
+  .footer{color:var(--sub);font-size:12px;text-align:center;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>功能对账报告</h1>
+  <div class="meta">当前项目 <code>E:\claude\vue-admin</code> &nbsp;vs&nbsp; 原型站 <code>adjitai.52laoshiji.com</code> &nbsp;·&nbsp; 2026-08-15</div>
+
+  <div class="card">
+    <h2>方法说明 <span class="tag">HOW</span></h2>
+    <p style="font-size:13.5px;color:var(--sub);margin:0">
+      原型是同源 SPA 且有登录墙，登录后页面无法直接渲染。因此直接 <code>curl</code> 抓取原型构建产物
+      <code>index-*.js</code>，从压缩代码里提取<strong>真实路由表、侧边栏菜单分组、支付弹窗归属</strong>作为"真值"基准；
+      当前项目则读取 <code>router/index.js</code> + <code>layout/Index.vue</code> 菜单 + <code>src/views</code> 目录清点。
+      结论均来自可验证的源码/产物比对，非凭印象。
+    </p>
+  </div>
+
+  <!-- 一、页面清单 -->
+  <div class="card">
+    <h2>一、页面清单 Diff（路由级） <span class="tag">22 路由</span></h2>
+    <table>
+      <thead><tr><th>页面</th><th>路由</th><th>原型</th><th>当前</th><th>状态</th></tr></thead>
+      <tbody>
+        <tr><td>仪表盘</td><td><code>/dashboard</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>电池回收订单</td><td><code>/recycle/orders</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>销售工作台</td><td><code>/sales/workbench</code></td><td>✅</td><td>✅</td><td><span class="pill p-warn">标签差</span> 原型"销售工作台" / 当前"销售个人工作台"</td></tr>
+        <tr><td>我的业绩概览</td><td><code>/sales/performance</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>业务回收单</td><td><code>/sales/recycle-orders</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>销售出库单</td><td><code>/inventory/sales</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>报价单管理</td><td><code>/inventory/quotations</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>终端设备管理</td><td><code>/charging/stations</code></td><td>✅</td><td>✅</td><td><span class="pill p-warn">仅分组不同</span></td></tr>
+        <tr><td>对账订单流</td><td><code>/charging/orders</code></td><td>✅</td><td>✅</td><td><span class="pill p-warn">仅分组不同</span></td></tr>
+        <tr><td>库存查询 / 盘点 / 采购入库</td><td><code>/inventory/stock|audit|purchase</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>业绩结算</td><td><code>/finance/settlement</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">已对齐</span> 我重写过，已还原成双 Tab</td></tr>
+        <tr><td>员工管理</td><td><code>/staff</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>产品资料/分类/供应商/仓库</td><td><code>/data/*</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>意见反馈 / 系统设置</td><td><code>/feedback /settings</code></td><td>✅</td><td>✅</td><td><span class="pill p-ok">一致</span></td></tr>
+        <tr><td>外部渠道管理</td><td><code>/platform/channels</code></td><td>✅</td><td>❌</td><td><span class="pill p-bad">缺失</span> 你之前要求删除"外部平台互通"模块</td></tr>
+        <tr><td>接口授权监控</td><td><code>/platform/api</code></td><td>✅</td><td>❌</td><td><span class="pill p-bad">缺失</span> 同上，属有意删除</td></tr>
+        <tr><td>公开竞价/报价页</td><td><code>/public-quote</code></td><td>✅</td><td>❌</td><td><span class="pill p-bad">缺失</span> 原型有，公开分享报价单用，当前无</td></tr>
+        <tr><td>出纳支付中心</td><td><code>/finance/payment</code></td><td>❌</td><td>✅</td><td><span class="pill p-info">多余</span> 原型无此独立页（支付是对话框）</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <!-- 二、菜单结构 -->
+  <div class="card">
+    <h2>二、侧边栏菜单结构 Diff</h2>
+    <div class="grid2">
+      <div>
+        <div class="grp"><b>原型 7 组</b></div>
+        <div class="grp"><b>销售业务</b><span class="items">销售工作台 · 我的业绩概览 · 业务回收单 · 销售出库单 · 报价单管理</span></div>
+        <div class="grp"><b>运营中心</b><span class="items">仪表盘 · 电池回收订单</span></div>
+        <div class="grp"><b>外部平台互通</b><span class="items">外部渠道管理 · 终端设备管理 · 对账订单流 · 接口授权监控</span></div>
+        <div class="grp"><b>进销存管理</b><span class="items">库存查询 · 库存盘点 · 采购入库</span></div>
+        <div class="grp"><b>绩效与结算</b><span class="items">业绩结算 · 员工管理</span></div>
+        <div class="grp"><b>基础数据</b><span class="items">产品资料 · 产品分类管理 · 供应商管理 · 仓库管理</span></div>
+        <div class="grp"><b>系统服务</b><span class="items">意见反馈 · 系统设置</span></div>
+      </div>
+      <div>
+        <div class="grp"><b>当前 7 组</b></div>
+        <div class="grp"><b>运营中心</b><span class="items">仪表盘 · 电池回收订单</span></div>
+        <div class="grp"><b>销售业务</b><span class="items">销售个人工作台 · 我的业绩概览 · 业务回收单 · 销售出库单 · 报价单</span></div>
+        <div class="grp"><b class="em">充电业务</b><span class="items">终端设备管理 · 对账订单流&nbsp;<span class="pill p-info">新建</span></span></div>
+        <div class="grp"><b>进销存管理</b><span class="items">库存查询 · 库存盘点 · 采购入库</span></div>
+        <div class="grp"><b>绩效与结算</b><span class="items">业绩结算 · <span class="pill p-info">出纳支付中心</span> · 员工管理</span></div>
+        <div class="grp"><b>基础数据</b><span class="items">产品资料 · 产品分类管理 · 供应商管理 · 仓库管理</span></div>
+        <div class="grp"><b>系统服务</b><span class="items">意见反馈 · 系统设置</span></div>
+      </div>
+    </div>
+    <div class="note">
+      <b>菜单级差异 4 处：</b>
+      ① 我删除了"外部平台互通"分组（你之前要求）；
+      ② 我把充电页从"外部平台互通"里拆出，新建了"充电业务"分组（原型<strong>没有</strong>这个分组）；
+      ③ 我加了"出纳支付中心"菜单项（原型无）；
+      ④ 标签"销售工作台"被我改成"销售个人工作台"。
+    </div>
+  </div>
+
+  <!-- 三、重点：新增页面 -->
+  <div class="card">
+    <h2>三、重点：你最关心的"新增页面"偏离 <span class="tag">关键</span></h2>
+
+    <div class="spot">
+      <div class="k">FinancePayment.vue（出纳支付中心）+ PaymentDialog.vue</div>
+      <ul>
+        <li>原型<strong>没有这个独立路由页</strong>。原型的支付能力是 <code>财务出纳支付执行</code> 弹窗（720px 对话框，含"出款账户""金额"输入）。</li>
+        <li>该弹窗<strong>挂在「电池回收订单」详情页内</strong>——点订单里的"执行财务打款确认"按钮触发（bundle 中确认存在该弹窗与入口）。</li>
+        <li>我把它做成了独立路由页 + 可复用弹窗，结构/交互/字段全是自创，<strong>与原型对不上</strong>。</li>
+        <li><b>结论：</b>要么删掉独立页、把支付还原成"回收订单详情里的财务出纳支付执行弹窗"；要么保留为增强功能（但需承认它原型没有，属新增而非还原）。</li>
+      </ul>
+    </div>
+
+    <div class="spot">
+      <div class="k">/public-quote（公开竞价/报价页）—— 当前完全缺失</div>
+      <ul>
+        <li>原型有：一个 <code>emerald-900</code> 深色卡片的公开页，用于把报价单生成"<strong>外部竞价链接</strong>"分享给客户（<code>window.open("/#/public-quote")</code>、复制竞价链接）。</li>
+        <li>我的项目既无此页面，也没有"生成外部竞价链接"的入口。</li>
+      </ul>
+    </div>
+
+    <div class="note">
+      <b>被有意删除的两页</b>（你之前明确要求删"外部平台互通"）：<code>PlatformChannels.vue</code>(外部渠道管理)、<code>PlatformApi.vue</code>(接口授权监控)。
+      原型里它们和充电页同属"外部平台互通"分组。如需保留原型结构，应把充电页放回该分组；若维持现状则属已知取舍。
+    </div>
+  </div>
+
+  <!-- 四、内容级风险 -->
+  <div class="card">
+    <h2>四、内容级风险（我已重写/接后端的页面）</h2>
+    <p style="font-size:13.5px;color:var(--sub);margin-top:0">
+      我把全站 22 个页面从 mock 切到了真实 SQLite 后端。原型跑在 mock 上，因此<strong>空数据态、字段名、统计口径</strong>可能不同。
+      以下页面我被重点改过，内部视觉/数据最可能和原型不一致，建议逐页做视觉 diff：
+    </p>
+    <ul>
+      <li><b>FinanceSettlement.vue</b> —— 已按原型重写成双 Tab（结构已对齐，数据仍为演示值）。</li>
+      <li><b>Quotations.vue</b> —— 修过默认值，避免白屏。</li>
+      <li><b>ChargingStations.vue / InventoryStock.vue</b> —— 数据改为读后端，原型的"本地合成"字段（如批次/资产追溯）已无。</li>
+      <li><b>电池回收订单 / 销售出库 / 采购入库 / 报价单</b> —— 核心业务页，建议与原型截图逐屏比对。</li>
+    </ul>
+  </div>
+
+  <!-- 五、修复优先级 -->
+  <div class="card">
+    <h2>五、修复优先级建议</h2>
+    <div class="todo">
+      <div class="k">P0 · 结构对齐（快，纯配置）</div>
+      <ul>
+        <li>菜单：确认是否恢复"外部平台互通"分组结构，或保留"充电业务"（需你拍板）；移除"出纳支付中心"菜单项。</li>
+        <li>标签：销售工作台改回。</li>
+      </ul>
+    </div>
+    <div class="todo">
+      <div class="k">P1 · 缺失/错位功能</div>
+      <ul>
+        <li>补 <code>/public-quote</code> 公开竞价页（或确认不需要）。</li>
+        <li>支付：把独立页改为「回收订单详情内的财务出纳支付执行弹窗」，对齐原型。</li>
+      </ul>
+    </div>
+    <div class="todo">
+      <div class="k">P2 · 内容 diff</div>
+      <ul>
+        <li>对核心业务页（回收订单/销售出库/采购入库/报价单）逐一视觉比对原型截图。</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer">报告由自动化对账生成 · 真值取自原型构建产物 · 如需我直接动手修复，请确认上面 P0/P1 的范围</div>
+</div>
+</body>
+</html>
