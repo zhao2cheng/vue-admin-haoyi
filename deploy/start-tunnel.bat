@@ -49,8 +49,8 @@ echo [INFO] 启动后端 :4000 ...
 start "backend" /min cmd /c "node backend\server.js > deploy\logs\backend.log 2>&1"
 ping -n 3 127.0.0.1 >nul
 
-REM 验后端
-powershell -NoProfile -Command "$r = try { (Invoke-WebRequest -Uri 'http://127.0.0.1:4000/' -TimeoutSec 5 -UseBasicParsing -ErrorAction Stop).StatusCode } catch { 0 }; if ($r -eq 200) { exit 0 } else { exit 1 }" >nul 2>&1
+REM 验后端（用 Node 一行，避开 PowerShell 内联的大括号 cmd 兼容问题）
+node -e "var r=require('http').get('http://127.0.0.1:4000/',function(){process.exit(0)}); r.setTimeout(5000,function(){r.destroy();process.exit(1)}); r.on('error',function(){process.exit(1)})" >nul 2>&1
 if errorlevel 1 (
   echo [FAIL] 后端启动失败，看日志: %ROOT%\deploy\logs\backend.log
   type "%ROOT%\deploy\logs\backend.log" 2>nul
