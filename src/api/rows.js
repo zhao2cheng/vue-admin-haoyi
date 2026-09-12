@@ -11,6 +11,12 @@ export const rowsApi = {
   remove: (table, id) => api.delete(`/rows/${table}/${id}`),
 }
 
+// ── 价格参考（加权平均）──
+export const priceApi = {
+  // 按产品查近 N 天历史成交的加权平均参考价
+  reference: (productId, days = 90) => api.get('/price/reference', { params: { product_id: productId, days } }),
+}
+
 // ── 事务型业务 ──
 export const txApi = {
   payExecute: (data) => api.post('/tx/pay-execute', data),

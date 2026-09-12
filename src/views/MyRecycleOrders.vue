@@ -258,8 +258,17 @@
                   </el-form-item>
                 </div>
                 <div class="col-span-4">
-                  <el-form-item label="单价" class="zero-mb">
+                  <el-form-item class="zero-mb">
+                    <template #label>
+                      <span>单价</span>
+                    </template>
                     <el-input-number v-model="item.price" :precision="2" controls-position="right" class="!w-full" size="small" />
+                    <p v-if="item.priceRef" class="text-[10px] leading-tight mt-0.5 text-blue-500 font-bold">
+                      <template v-if="item.priceRef.source === 'recycle'">
+                        ⚖ 加权参考价：近{{ item.priceRef.windowDays }}天 {{ item.priceRef.sampleCount }} 笔 / {{ item.priceRef.totalQty }} 件 · 最近成交 ¥{{ item.priceRef.lastPrice }}
+                      </template>
+                      <template v-else-if="item.priceRef.source === 'archive'">📦 无历史成交，参考档案价</template>
+                    </p>
                   </el-form-item>
                 </div>
               </div>
@@ -610,7 +619,7 @@
 import { ref, reactive, computed, watch, onMounted } from 'vue'
 import { ElMessage, ElMessageBox } from 'element-plus'
 import { Plus, ArrowLeft, Delete, Download, Money, Picture, Search, Warning, Refresh, InfoFilled } from '@element-plus/icons-vue'
-import { rowsApi, txApi } from '@/api/rows'
+import { rowsApi, txApi, priceApi } from '@/api/rows'
 import { exportCsv, toNum, nowStamp } from '@/utils/export'
 import { useAuthStore } from '@/store/auth'
 
@@ -809,6 +818,7 @@ onMounted(async () => {
       returnDoneTime: r.return_done_time || '',
     }))
   } catch { /* 后端不可达时保留空列表 */ }
+  loadProducts()
 })
 
 const supplierOptions = [
@@ -817,10 +827,20 @@ const supplierOptions = [
   { name: '个人货源: 李四', type: 'individual' },
 ]
 
-const products = [
-  { id: 'P01', name: '75kWh 翻新动力电池', spec: 'Tesla M3/Y', price: 21000 },
-  { id: 'P02', name: 'LFP 电池模组', spec: '宁德时代 200Ah', price: 850 },
-]
+// 商品档案（从后端 products 表实时加载，替换原硬编码列表）
+const products = ref([])
+
+async function loadProducts() {
+  try {
+    const res = await rowsApi.list('products', { size: 200, sort: 'id', order: 'asc' })
+    products.value = (res.data?.list || []).map(p => ({
+      id: p.id,
+      name: p.name || '未命名产品',
+      spec: p.model || '',
+      price: Number(p.cost_price) || 0,
+    }))
+  } catch { /* 后端不可达时保持空列表 */ }
+}
 
 // ═══ Computed ═══
 const orderTotal = computed(() => createForm.items.reduce((sum, item) => sum + item.qty * (item.price || 0), 0))
@@ -863,13 +883,13 @@ function openCreate() {
     date: new Date(), warehouse: '1号主仓', paymentType: '现结', supplier: '',
     payee: '', freightPayer: '对方', freightAmount: 0, remarks: '',
     bankAccount: '', bankName: '', alipayQR: '', wechatQR: '',
-    items: [{ productId: '', qty: 1, unit: '组', price: 0, serialNo: '', remark: '', needDismantle: false }],
+    items: [{ productId: '', qty: 1, unit: '组', price: 0, priceRef: null, serialNo: '', remark: '', needDismantle: false }],
   })
   createVisible.value = true
 }
 
 function addItemRow() {
-  createForm.items.push({ productId: '', qty: 1, unit: '组', price: 0, serialNo: '', remark: '', needDismantle: false })
+  createForm.items.push({ productId: '', qty: 1, unit: '组', price: 0, priceRef: null, serialNo: '', remark: '', needDismantle: false })
 }
 
 function removeItemRow(idx) {
@@ -885,9 +905,20 @@ function onSupplierChange(name) {
   }
 }
 
-function onProductChange(idx, productId) {
-  const p = products.find(x => x.id === productId)
-  if (p) createForm.items[idx].price = p.price
+// 选品后：拉取加权平均参考价自动填入（销售可手动调整）
+async function onProductChange(idx, productId) {
+  const item = createForm.items[idx]
+  item.priceRef = null
+  if (!productId) return
+  const p = products.value.find(x => x.id === productId)
+  if (p && p.price > 0) item.price = p.price   // 档案价先兜底，参考价到达后覆盖
+  try {
+    const { data } = await priceApi.reference(productId)
+    if (data?.refPrice && Number(data.refPrice) > 0 && createForm.items[idx]?.productId === productId) {
+      item.price = Number(data.refPrice)
+      item.priceRef = data
+    }
+  } catch { /* 参考价不可达时保留档案价 */ }
 }
 
 function submitCreate() {
@@ -898,7 +929,7 @@ function submitCreate() {
   const newId = 'RC' + Date.now().toString().slice(-8)
   // 映射前端 createForm.items → 后端 recycle_order_items 字段
   const items = createForm.items.map((i, idx) => {
-    const p = products.find(x => x.id === i.productId)
+    const p = products.value.find(x => x.id === i.productId)
     return {
       product_id: i.productId,
       product_name: p?.name || '未知资产',

@@ -643,6 +643,60 @@ const server = createServer(async (req, res) => {
   // ── 账号权限：解析当前用户的角色权限数组（超管 '*' 放行一切）──
   const userPerms = loadUserPerms(auth.id)
 
+  // ── 加权平均参考价：按产品聚合近 N 天回收明细成交价（数量加权），无历史回退商品档案价 ──
+  // GET /api/price/reference?product_id=1&days=90
+  if (path === '/api/price/reference' && req.method === 'GET') {
+    const sp = url.searchParams
+    const productId = sp.get('product_id')
+    const days = Math.min(365, Math.max(7, parseInt(sp.get('days') || '90', 10) || 90))
+    if (!productId) return send(400, { code: 400, message: '缺少 product_id' })
+    try {
+      // created_at 为 localtime 文本（YYYY-MM-DD HH:MM:SS），日期前缀可直接字典序比较
+      const d = new Date(Date.now() - days * 864e5)
+      const since = `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`
+      const rows = db.prepare(
+        `SELECT qty, unit_price, created_at FROM recycle_order_items
+          WHERE product_id = ? AND created_at >= ? ORDER BY created_at DESC`
+      ).all(String(productId), since)
+      let qtySum = 0
+      let amtSum = 0
+      let lastPrice = 0
+      let sampleCount = 0
+      for (const r of rows) {
+        const q = Number(r.qty) || 0
+        const p = parseMoney(r.unit_price)
+        if (q > 0 && p > 0) {
+          qtySum += q
+          amtSum += q * p
+          sampleCount++
+          if (!lastPrice) lastPrice = p
+        }
+      }
+      let refPrice = qtySum > 0 ? amtSum / qtySum : 0
+      let source = qtySum > 0 ? 'recycle' : ''
+      // 无历史成交 → 回退商品档案 cost_price
+      if (!refPrice) {
+        const prod = db.prepare('SELECT cost_price FROM products WHERE id = ?').get(String(productId))
+        const cp = parseMoney(prod?.cost_price)
+        if (cp > 0) { refPrice = cp; source = 'archive' }
+      }
+      return send(200, {
+        code: 0, message: 'ok',
+        data: {
+          productId: String(productId),
+          windowDays: days,
+          refPrice: fmtMoney(refPrice),
+          source,               // recycle=历史成交加权 / archive=档案价 / ''=无参考
+          sampleCount,
+          totalQty: qtySum,
+          lastPrice: fmtMoney(lastPrice),
+        },
+      })
+    } catch (err) {
+      return send(500, { code: 500, message: err.message })
+    }
+  }
+
   // ── 关系型 CRUD API ──
   if (path.startsWith('/api/rows')) {
     // 写操作（POST/PUT/DELETE）按表校验权限；读操作（GET）敏感表按域校验，其余登录即可

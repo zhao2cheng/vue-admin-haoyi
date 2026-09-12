@@ -4,6 +4,7 @@ node_modules/
 # 生产构建 / 构建检查产物
 dist/
 dist_*/
+dist_chk_*.txt
 
 # Vite 临时文件
 vite.config.js.timestamp-*
