@@ -23,14 +23,19 @@ export DEBIAN_FRONTEND=noninteractive
 apt-get update -y
 apt-get install -y nginx curl tar xz-utils ca-certificates
 
-# ---------- [2/7] Node.js 22（npmmirror 国内镜像，快） ----------
-log "[2/7] 安装 Node.js 22"
+# ---------- [2/7] Node.js 22（钉死 22.22.2 —— 本地验证过的版本） ----------
+# ⚠ 早期 v22 的 node:sqlite 在事务内 .get() 会忽略查询条件（曾导致"创建账号永远提示已存在"），
+#    因此必须精确匹配已验证版本，发现版本不符一律强制重装。
+NODE_PIN="22.22.2"
+log "[2/7] 安装 Node.js ${NODE_PIN}（钉死版本，保证 node:sqlite 行为与本地一致）"
 NEED_NODE=1
 if command -v node >/dev/null 2>&1; then
-  CUR_MAJOR="$(node -p 'process.versions.node.split(".")[0]')"
-  if [ "$CUR_MAJOR" -ge 22 ]; then
+  CUR="$(node -v 2>/dev/null | sed 's/^v//')"
+  if [ "$CUR" = "$NODE_PIN" ]; then
     NEED_NODE=0
-    echo "    已有 Node $(node -v)，跳过安装"
+    echo "    已有 Node ${CUR}（与验证版本一致），跳过安装"
+  else
+    echo "    当前 Node ${CUR:-未知} 与验证版本不符，强制重装 ${NODE_PIN}"
   fi
 fi
 if [ "$NEED_NODE" = "1" ]; then
@@ -40,20 +45,19 @@ if [ "$NEED_NODE" = "1" ]; then
     aarch64) NARCH="linux-arm64" ;;
     *) echo "!! 不支持的 CPU 架构：$ARCH"; exit 1 ;;
   esac
-  FNAME="$(curl -fsSL 'https://registry.npmmirror.com/-/binary/node/latest-v22.x/' \
-           | grep -o "node-v22[0-9.]*-${NARCH}\.tar\.xz" | head -1)"
-  if [ -z "$FNAME" ]; then
-    echo "!! 无法获取 Node 22 下载地址，请手动安装 Node 22 后重试"
-    exit 1
-  fi
   cd /tmp
-  curl -fsSL -o node22.tar.xz "https://registry.npmmirror.com/-/binary/node/latest-v22.x/${FNAME}"
+  curl -fsSL -o node22.tar.xz "https://registry.npmmirror.com/-/binary/node/v${NODE_PIN}/node-v${NODE_PIN}-${NARCH}.tar.xz"
+  rm -rf "node-v${NODE_PIN}-${NARCH}"
   tar -xJf node22.tar.xz
-  cp -r "${FNAME%.tar.xz}/bin"  /usr/local/
-  cp -r "${FNAME%.tar.xz}/lib"  /usr/local/
-  cp -r "${FNAME%.tar.xz}/include" /usr/local/ 2>/dev/null || true
-  cp -r "${FNAME%.tar.xz}/share" /usr/local/ 2>/dev/null || true
+  cp -r "node-v${NODE_PIN}-${NARCH}/bin"  /usr/local/
+  cp -r "node-v${NODE_PIN}-${NARCH}/lib"  /usr/local/
+  cp -r "node-v${NODE_PIN}-${NARCH}/include" /usr/local/ 2>/dev/null || true
+  cp -r "node-v${NODE_PIN}-${NARCH}/share" /usr/local/ 2>/dev/null || true
   hash -r
+  INSTALLED="$(node -v 2>/dev/null || echo '安装失败')"
+  if [ "$INSTALLED" != "v${NODE_PIN}" ]; then
+    echo "!! Node 安装异常（当前 ${INSTALLED}），请手动排查"; exit 1
+  fi
   echo "    Node 安装完成：$(node -v)"
   cd "$SRC"
 fi
@@ -100,7 +104,8 @@ fi
 set -a; . "$ENVF"; set +a
 
 cd "$APP/backend"
-pm2 delete vue-admin-backend >/dev/null 2>&1 || true
+# Node 重装后 pm2 守护进程可能还挂在旧二进制上：杀掉守护进程，用新 Node 重启全部
+pm2 kill >/dev/null 2>&1 || true
 PORT=4000 NODE_ENV=production pm2 start server.js --name vue-admin-backend --time
 pm2 save
 pm2 startup systemd -u root --hp /root >/dev/null 2>&1 || true
