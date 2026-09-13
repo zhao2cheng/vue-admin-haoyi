@@ -67,10 +67,25 @@ command -v pm2 >/dev/null 2>&1 || \
 # ---------- [4/7] 部署文件 ----------
 log "[4/7] 复制文件到 $APP"
 mkdir -p "$APP"
+# 数据保全：更新部署时保留服务器上已有的数据库与上传图片（以服务器为准）
+DATA_BAK=""
+if [ -f "$APP/backend/data/app.db" ] || [ -d "$APP/backend/uploads" ]; then
+  DATA_BAK="$(mktemp -d /tmp/vue-admin-data.XXXXXX)"
+  [ -d "$APP/backend/data" ]    && cp -r "$APP/backend/data"    "$DATA_BAK/"
+  [ -d "$APP/backend/uploads" ] && cp -r "$APP/backend/uploads" "$DATA_BAK/"
+  log "检测到服务器现有数据，已备份（更新不会丢账号/图片）"
+fi
 rm -rf "$APP/dist" "$APP/backend"
 cp -r "$SRC/dist"    "$APP/dist"
 cp -r "$SRC/backend" "$APP/backend"
 mkdir -p "$APP/backend/logs"
+if [ -n "$DATA_BAK" ]; then
+  rm -rf "$APP/backend/data" "$APP/backend/uploads"
+  cp -r "$DATA_BAK/data"    "$APP/backend/data"    2>/dev/null || true
+  cp -r "$DATA_BAK/uploads" "$APP/backend/uploads" 2>/dev/null || true
+  rm -rf "$DATA_BAK"
+  log "已恢复服务器数据（本次只更新代码与前端页面）"
+fi
 
 # ---------- [5/7] 后端（pm2 守护，开机自启） ----------
 log "[5/7] 启动后端（端口 4000，pm2 守护）"
