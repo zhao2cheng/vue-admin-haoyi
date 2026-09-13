@@ -178,7 +178,7 @@
       </el-form>
       <template #footer>
         <el-button @click="dlgProfile = false">取消</el-button>
-        <el-button type="primary" @click="submitProfile">{{ profileIsEdit ? '保存修改' : '创建账号' }}</el-button>
+        <el-button type="primary" :loading="profileSaving" @click="submitProfile">{{ profileIsEdit ? '保存修改' : '创建账号' }}</el-button>
       </template>
     </el-dialog>
 
@@ -383,6 +383,7 @@ async function saveDept() {
 // ── 员工档案设置弹窗（录入/编辑共用）──
 const dlgProfile = ref(false)
 const profileIsEdit = ref(false)
+const profileSaving = ref(false) // 防双击重复提交（双击会导致第二次请求报“账号已存在”）
 const profileForm = reactive({ id: null, name: '', username: '', dept: '', role: '', roleId: null, password: '' })
 function openCreate() {
   profileIsEdit.value = false
@@ -398,8 +399,11 @@ function openEdit(row) {
   dlgProfile.value = true
 }
 function submitProfile() {
+  if (profileSaving.value) return // 请求进行中，忽略重复点击
   if (!profileForm.name) return ElMessage.warning('请填写完整档案信息')
   if (!profileForm.username) return ElMessage.warning('请填写登录账号')
+  profileSaving.value = true
+  const done = () => { profileSaving.value = false }
   const deptId = departments.value.find((d) => d.name === profileForm.dept)?.id
   const roleName = roleOptions.value.find((r) => r.id === profileForm.roleId)?.name || profileForm.role
 
@@ -426,7 +430,11 @@ function submitProfile() {
         dlgProfile.value = false
         loadAll()
       })
-      .catch((e) => ElMessage.error(e?.response?.data?.message || '保存失败'))
+      .catch((e) => {
+        ElMessage.error(e?.response?.data?.message || '保存失败')
+        loadAll() // 失败也刷新：若首次请求实际已成功，列表里能看到账号
+      })
+      .finally(done)
     return
   }
 
@@ -444,7 +452,11 @@ function submitProfile() {
       dlgProfile.value = false
       loadAll()
     })
-    .catch((e) => ElMessage.error(e?.response?.data?.message || '创建失败'))
+    .catch((e) => {
+      ElMessage.error(e?.response?.data?.message || '创建失败')
+      loadAll() // 失败也刷新：双击场景下首次请求已建号，刷新后立即可见
+    })
+    .finally(done)
 }
 
 // ── 创建新部门弹窗 ──
